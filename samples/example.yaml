@@ -1,0 +1,97 @@
+asyncapi: 2.5.0
+info:
+
+  title: Account Service
+
+  version: '1.0.0'
+
+  description: 
+    Simple application
+
+servers:
+
+  production:
+
+    url: mqtt://127.0.0.1:1883
+
+    protocol: mqtt
+
+    description: Test mqtt broker
+
+channels:
+
+  amazon_braket_operation:
+    publish:
+      operationId: onOperation
+      message:
+        $ref: '#/components/messages/operationMsg'
+        name: 'operationMsg'
+      x-quantum:
+        quantum_url: https://raw.githubusercontent.com/jorgecs/pythonscripts/main/randomWithS3.py
+        quantum_machine: 'sv1'
+  s3_lambda_notification:
+    publish:
+      operationId: onNotification
+      message:
+        $ref: '#/components/messages/notificationMsg'
+        name: 'notificationMsg'
+  result:
+    subscribe:
+      operationId: onSubscribe
+      message:
+        $ref: '#/components/messages/resultMsg'
+        name: 'resultMsg'
+x-quantum-awslambda: 
+  channel: 's3_lambda_notification'
+  s3_bucket: 'amazon-braket-lambda-bucket'
+  role_arn: 'arn:aws:iam::123456789012:role/service-role/s3getobjectrole'
+  region: 'us-west-2'
+
+components:
+  schemas:
+    messageSchema:
+        type: object
+        additionalProperties: false
+        properties:
+          s3bucket:
+            type: string
+          s3folder:
+            type: string
+          machine:
+            type: string
+        required:
+          - s3bucket
+          - s3folder
+          - machine
+    outputMessageSchema:
+        type: object
+        additionalProperties: false
+        properties:
+          result:
+            type: string
+        required:
+          - result
+    notificationMessageSchema:
+        type: object
+        additionalProperties: false
+        properties:
+          data:
+            type: string
+        required:
+          - data
+  messages:
+    operationMsg:
+      contentType: application/json
+      payload: 
+        $ref: "#/components/schemas/messageSchema"
+    resultMsg:
+      contentType: application/json
+      payload: 
+        $ref: "#/components/schemas/outputMessageSchema"
+    notificationMsg:
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/notificationMessageSchema"
+        
+        
+

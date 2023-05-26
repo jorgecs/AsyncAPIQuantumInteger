@@ -1,0 +1,125 @@
+{
+  "name": "@asyncapi/nodejs-template",
+  "version": "0.12.0",
+  "description": "Node.js template for the AsyncAPI generator.",
+  "keywords": [
+    "asyncapi",
+    "generator",
+    "nodejs",
+    "template"
+  ],
+  "author": "Fran Mendez <fmvilas@gmail.com> (fmvilas.com)",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asyncapi/nodejs-template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/asyncapi/nodejs-template/issues"
+  },
+  "homepage": "https://github.com/asyncapi/nodejs-template#readme",
+  "scripts": {
+    "test": "rimraf test/temp && jest --modulePathIgnorePatterns='./template'",
+    "test:updateSnapshot": "rimraf test/temp && jest --updateSnapshot --modulePathIgnorePatterns='./template'",
+    "lint": "eslint --max-warnings 0 --config .eslintrc .",
+    "lint:fix": "eslint --fix --config .eslintrc .",
+    "release": "semantic-release",
+    "generate:assets": "npm run generate:readme:toc",
+    "generate:readme:toc": "markdown-toc -i README.md",
+    "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@asyncapi/generator-filters": "^2.1.0",
+    "@asyncapi/generator-hooks": "^0.1.0",
+    "filenamify": "^4.1.0",
+    "lodash": "^4.17.15",
+    "markdown-toc": "^1.2.0"
+  },
+  "devDependencies": {
+    "@asyncapi/generator": "^1.9.4",
+    "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/github": "^7.0.4",
+    "@semantic-release/npm": "^7.0.3",
+    "@semantic-release/release-notes-generator": "^9.0.1",
+    "conventional-changelog-conventionalcommits": "^4.2.3",
+    "eslint": "^8.7.0",
+    "eslint-plugin-jest": "^25.7.0",
+    "eslint-plugin-sonarjs": "^0.11.0",
+    "jest": "^27.3.1",
+    "node-fetch": "^2.6.1",
+    "rimraf": "^2.2.8",
+    "semantic-release": "^19.0.3"
+  },
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ]
+  },
+  "generator": {
+    "supportedProtocols": [
+      "amqp",
+      "mqtt",
+      "mqtts",
+      "kafka",
+      "kafka-secure",
+      "ws"
+    ],
+    "parameters": {
+      "server": {
+        "description": "The server you want to use in the code.",
+        "required": true
+      },
+      "asyncapiFileDir": {
+        "description": "Custom location of the AsyncAPI file that you provided as an input in generation. By default it is located in the root of the output directory"
+      },
+      "securityScheme": {
+        "description": "Name of the security scheme. Only scheme with X509 and Kafka protocol is supported for now."
+      },
+      "certFilesDir": {
+        "description": "Directory where application certificates are located. This parameter is needed when you use X509 security scheme and your cert files are not located in the root of your application.",
+        "default": "./"
+      },
+      "quantumInteger": {
+        "description": "Quantum integer that will be put before your circuit"
+      },
+      "qubitNumber":{
+        "description": "Number of qubits in which your quantumInteger will be codified",
+        "default":"3"
+      },
+      "littleEndian":{
+        "description": "true if your number should be codified on litte endian, false otherwise",
+        "default": "false"
+      }
+    },
+    "nonRenderableFiles": [
+      "src/api/middlewares/*.*",
+      "src/lib/config.js"
+    ],
+    "generator": ">=0.50.0 <2.0.0",
+    "filters": [
+      "@asyncapi/generator-filters"
+    ],
+    "hooks": {
+      "@asyncapi/generator-hooks": "createAsyncapiFile"
+    }
+  }
+}
