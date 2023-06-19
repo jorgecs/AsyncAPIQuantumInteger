@@ -32,7 +32,7 @@ response = lambda_Client.create_function(
             Publish=True,
             {%- set lambda = asyncapi.ext('x-quantum-awslambda') %}
             Role='{{lambda.role_arn}}',
-            Runtime='nodejs12.x',
+            Runtime='nodejs18.x',
         )
 
 response = lambda_Client.get_function(FunctionName='asyncapi_lambda')
